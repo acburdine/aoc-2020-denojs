@@ -12,3 +12,11 @@ export async function readInput<T>(
 
   return result;
 }
+
+export function range_incl(min: number, max: number, n: number): boolean {
+  return n >= min && n <= max;
+}
+
+export function xor(a: boolean, b: boolean): boolean {
+  return (a || b) && a !== b;
+}
