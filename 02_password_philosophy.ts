@@ -1,36 +1,23 @@
 import { readInput } from "./lib/util.ts";
 
-interface Line {
-  min: number;
-  max: number;
-  letter: string;
-  password: string;
-}
+type L = [number, number, string, string];
 
-const lineRegex = /^(\d+)-(\d+) ([a-z]{1}): ([a-z]+)$/;
+const lr = /^(\d+)-(\d+) ([a-z]{1}): ([a-z]+)$/;
 
-const input = (await readInput<Line | null>((l) => {
-  const matches = l.trim().match(lineRegex);
-  if (!matches) {
-    return null;
-  }
-
-  return {
-    min: parseInt(matches[1]),
-    max: parseInt(matches[2]),
-    letter: matches[3],
-    password: matches[4]
-  };
-})).filter((l): l is Line => l !== null);
+const input = (await readInput<L | null>((l) => {
+  const m = l.trim().match(lr);
+  if (!m) return null;
+  return [parseInt(m[1], 10), parseInt(m[2], 10), m[3], m[4]];
+})).filter((l): l is L => l !== null);
 
 const xor = (x: boolean, y: boolean): boolean => (x || y) && x !== y;
 
-const valid1 = (l: Line): boolean => {
-  const count = l.password.split("").filter((c) => c === l.letter).length;
-  return count >= l.min && count <= l.max;
+const v1 = (l: L): boolean => {
+  const count = l[3].split("").filter((c) => c === l[2]).length;
+  return count >= l[0] && count <= l[1];
 }
 
-const valid2 = (l: Line): boolean => xor(l.password[l.min - 1] === l.letter, l.password[l.max - 1] === l.letter);
+const v2 = (l: L): boolean => xor(l[3][l[0] - 1] === l[2], l[3][l[1] - 1] === l[2]);
 
-console.log(input.filter(valid1).length);
-console.log(input.filter(valid2).length);
+console.log(input.filter(v1).length);
+console.log(input.filter(v2).length);
