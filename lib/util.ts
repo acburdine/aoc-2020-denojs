@@ -7,6 +7,10 @@ export async function readInput<T>(
   let result: T[] = [];
 
   for await (let line of readStringDelim(Deno.stdin, delim)) {
+    if (!line.trim().length) {
+      continue;
+    }
+
     result.push(await mapFn(line));
   }
 
